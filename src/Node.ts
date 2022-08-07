@@ -1,15 +1,12 @@
-export class Node {
-  data: number;
-  left: Node | null;
-  right: Node | null;
+/**
+ * Implementation of simple Binary Tree node, containing a single number as data,
+ * and pointers to it's left and right children.
+ */
 
+export class Node {
   constructor(
-    data: number,
-    left: Node | null = null,
-    right: Node | null = null
-  ) {
-    this.data = data;
-    this.left = left;
-    this.right = right;
-  }
+    public data: number,
+    public left: Node | null = null,
+    public right: Node | null = null
+  ) {}
 }
