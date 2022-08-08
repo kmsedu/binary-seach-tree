@@ -89,6 +89,20 @@ export class Tree {
       : this.find(key, root.left);
   }
 
+  public levelOrder(root: Node | null, callback?: Function) {
+    if (root === null) throw Error('Invalid root parameter.');
+    const queue = [];
+    const returnArray = [];
+    queue.push(root);
+    while (queue.length >= 1) {
+      const node: Node = queue.shift()!;
+      if (node.left !== null) queue.push(node.left);
+      if (node.right !== null) queue.push(node.right);
+      callback ? callback(node) : returnArray.push(node.data);
+    }
+    return returnArray;
+  }
+
   public prettyPrint(
     node: Node | null = this.root,
     prefix = '',
@@ -138,5 +152,5 @@ emptyTree.delete(6, emptyTree.root);
 emptyTree.prettyPrint(emptyTree.root);
 emptyTree.delete(4, emptyTree.root);
 emptyTree.prettyPrint(emptyTree.root);
-emptyTree.treePrint(emptyTree.root);
-console.log(emptyTree.find(1));
+console.log(emptyTree.levelOrder(emptyTree.root));
+emptyTree.levelOrder(emptyTree.root, (node: Node) => console.log(node.data));
