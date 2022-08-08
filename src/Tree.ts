@@ -9,7 +9,6 @@ export class Tree {
     end: number
   ): Node | null {
     if (start > end) return null;
-
     const mid = Math.trunc((start + end) / 2);
     const root = new Node(array[mid]);
 
@@ -80,7 +79,7 @@ export class Tree {
     return root;
   }
 
-  public find(key: number, root: Node | null = this.root): Node | void {
+  public find(key: number, root: Node | null = this.root): Node {
     if (root === null) throw Error('Item not in the tree.');
     if (root.data === key) return root;
 
@@ -159,6 +158,66 @@ export class Tree {
     if (!callback) return arr;
   }
 
+  public height(node: Node | null) {
+    if (node === null) return 0;
+
+    const leftHeight: number = this.height(node.left);
+    const rightHeight: number = this.height(node.right);
+
+    if (leftHeight - rightHeight > 1) {
+      return -1;
+    }
+
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  public depth(root: Node | null = this.root, node: Node | null): number {
+    if (node === null) throw Error('Invalid search parameter.');
+    if (root === null) return -1;
+    let distance = -1;
+
+    if (root.data === node.data) return distance + 1;
+
+    distance = this.depth(root.left, node);
+    if (distance >= 0) return distance + 1;
+    distance = this.depth(root.right, node);
+    if (distance >= 0) return distance + 1;
+
+    return distance;
+  }
+
+  private checkBalance(node: Node | null) {
+    if (node === null) return 0;
+
+    const leftHeight: number = this.checkBalance(node.left);
+    if (leftHeight === -1) return -1;
+
+    const rightHeight: number = this.checkBalance(node.right);
+    if (rightHeight === -1) return -1;
+
+    if (Math.abs(leftHeight - rightHeight) > 1) {
+      return -1;
+    } else {
+      return 1 + Math.max(leftHeight, rightHeight);
+    }
+  }
+
+  public isBalanced(node: Node | null) {
+    return this.checkBalance(node) !== -1;
+  }
+
+  public rebalance(root: Node | null): void {
+    const arr: number[] = [];
+    const traverse = (root: Node | null) => {
+      if (root === null) return;
+      traverse(root.left);
+      arr.push(root.data);
+      traverse(root.right);
+    };
+    traverse(root);
+    this.root = this.buildTree(arr, 0, arr.length - 1);
+  }
+
   public prettyPrint(
     node: Node | null = this.root,
     prefix = '',
@@ -202,12 +261,33 @@ export class Tree {
 /* For node.js testing */
 
 const emptyTree = new Tree();
-const arr = [...Array(5).keys()].map(num => num + 1);
+const arr = [
+  23, 8, 27, 35, 30, 15, 21, 6, 25, 1, 31, 9, 3, 4, 19, 24, 2, 12, 17, 20, 14,
+  11, 26, 13, 22, 33, 29, 18, 28, 34, 32, 16, 5, 7, 10,
+].sort((a, b) => a - b);
 
-emptyTree.buildTree(arr, 0, 4);
+console.log(arr);
+
+emptyTree.buildTree(arr, 0, arr.length - 1);
 
 emptyTree.prettyPrint(emptyTree.root);
 
-console.log(emptyTree.inorder(emptyTree.root));
-console.log(emptyTree.preorder(emptyTree.root));
-console.log(emptyTree.postorder(emptyTree.root));
+console.log(emptyTree.height(emptyTree.find(4)));
+
+console.log(emptyTree.depth(emptyTree.root, emptyTree.find(8)));
+
+console.log(emptyTree.isBalanced(emptyTree.root));
+
+emptyTree.insert(100);
+emptyTree.insert(101);
+emptyTree.insert(102);
+emptyTree.insert(103);
+emptyTree.insert(104);
+
+emptyTree.prettyPrint();
+
+console.log(emptyTree.isBalanced(emptyTree.root));
+
+emptyTree.rebalance(emptyTree.root);
+
+emptyTree.prettyPrint();
