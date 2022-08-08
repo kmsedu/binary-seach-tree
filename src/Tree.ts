@@ -89,7 +89,7 @@ export class Tree {
   }
 
   public levelOrder(
-    root: Node | null,
+    root: Node | null = this.root,
     callback?: Function
   ): Array<number> | void {
     if (root === null) throw Error('Invalid root parameter.');
@@ -107,7 +107,10 @@ export class Tree {
     if (!callback) return returnArray;
   }
 
-  public inorder(root: Node | null, callback?: Function): number[] | void {
+  public inorder(
+    root: Node | null = this.root,
+    callback?: Function
+  ): number[] | void {
     if (root === null) throw Error('Invalid root parameter.');
 
     const arr: number[] = [];
@@ -124,7 +127,10 @@ export class Tree {
     if (!callback) return arr;
   }
 
-  public preorder(root: Node | null, callback?: Function): number[] | void {
+  public preorder(
+    root: Node | null = this.root,
+    callback?: Function
+  ): number[] | void {
     if (root === null) throw Error('Invalid root parameter.');
 
     const arr: number[] = [];
@@ -141,7 +147,10 @@ export class Tree {
     if (!callback) return arr;
   }
 
-  public postorder(root: Node | null, callback?: Function): number[] | void {
+  public postorder(
+    root: Node | null = this.root,
+    callback?: Function
+  ): number[] | void {
     if (root === null) throw Error('Invalid root parameter.');
 
     const arr: number[] = [];
@@ -202,11 +211,11 @@ export class Tree {
     }
   }
 
-  public isBalanced(node: Node | null) {
-    return this.checkBalance(node) !== -1;
+  public isBalanced(root: Node | null = this.root) {
+    return this.checkBalance(root) !== -1;
   }
 
-  public rebalance(root: Node | null): void {
+  public rebalance(root: Node | null = this.root): void {
     const arr: number[] = [];
     const traverse = (root: Node | null) => {
       if (root === null) return;
@@ -240,7 +249,7 @@ export class Tree {
     }
   }
 
-  public treePrint(node: Node | null) {
+  public treePrint(node: Node | null = this.root) {
     if (node !== null) {
       const p = (s: string, t: string, n: number, l: number) =>
         (Array(l + 1).join(s) + Array(n + 1).join(t)).slice(0, n);
@@ -251,43 +260,54 @@ export class Tree {
       }
       for (let i = 0; i < 2; i++) {
         console.log(
-          `\x1b[31m ${p(' ', '*', 9, 7)}${p('*', ' ', 9, 2)} \x1b[0m`
+          `\x1b[31m ${p(' ', '*', 9, 6)}${p('*', ' ', 9, 2)} \x1b[0m`
         );
       }
     }
   }
 }
 
-/* For node.js testing */
+/* Driver script */
 
-const emptyTree = new Tree();
-const arr = [
+const randomNumberArray = [
   23, 8, 27, 35, 30, 15, 21, 6, 25, 1, 31, 9, 3, 4, 19, 24, 2, 12, 17, 20, 14,
   11, 26, 13, 22, 33, 29, 18, 28, 34, 32, 16, 5, 7, 10,
 ].sort((a, b) => a - b);
 
-console.log(arr);
+console.log('Seed array: ', randomNumberArray);
 
-emptyTree.buildTree(arr, 0, arr.length - 1);
+const testTree = new Tree();
+testTree.buildTree(randomNumberArray, 0, randomNumberArray.length - 1);
 
-emptyTree.prettyPrint(emptyTree.root);
+testTree.prettyPrint();
 
-console.log(emptyTree.height(emptyTree.find(4)));
+console.log('Tree balanced:', testTree.isBalanced());
 
-console.log(emptyTree.depth(emptyTree.root, emptyTree.find(8)));
+console.log('Printing in orders...');
+console.log('Level order:', testTree.levelOrder());
+console.log('Preorder:', testTree.preorder());
+console.log('Postorder:', testTree.postorder());
+console.log('Inorder:', testTree.inorder());
 
-console.log(emptyTree.isBalanced(emptyTree.root));
+const numsToInsert = [100, 105, 110, 113, 140, 165, 199];
+console.log('Inserting numbers:', numsToInsert);
+for (const num of numsToInsert) {
+  testTree.insert(num);
+}
+testTree.prettyPrint();
 
-emptyTree.insert(100);
-emptyTree.insert(101);
-emptyTree.insert(102);
-emptyTree.insert(103);
-emptyTree.insert(104);
+console.log('Tree balanced:', testTree.isBalanced());
 
-emptyTree.prettyPrint();
+console.log('Rebalancing tree...');
+testTree.rebalance();
+testTree.prettyPrint();
 
-console.log(emptyTree.isBalanced(emptyTree.root));
+console.log('Tree balanced:', testTree.isBalanced());
 
-emptyTree.rebalance(emptyTree.root);
+console.log('Printing in orders...');
+console.log('Level order:', testTree.levelOrder());
+console.log('Preorder:', testTree.preorder());
+console.log('Postorder:', testTree.postorder());
+console.log('Inorder:', testTree.inorder());
 
-emptyTree.prettyPrint();
+testTree.treePrint();
